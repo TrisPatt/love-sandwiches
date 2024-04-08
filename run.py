@@ -69,13 +69,23 @@ def updateSurplusWorksheet(surplus):
     surplus_worksheet.append_row(surplus)
     print("surplus worksheet updated successfully \n")
 
+def getLastFiveEntrySales():
+    sales = SHEET.worksheet("sales")
+    
+    columns = []
+    for ind in range(1, 7):
+        column = sales.col.values(ind)
+        columns.append(column[-5:])
+
+    return columns
+
 def main():
     data = getSalesData()
     salesData = [int(num) for num in data]
     updateSalesWorksheet(salesData)
     newSurplusData = calculateSurplusData(salesData)
     updateSurplusWorksheet(newSurplusData)
-
+salesColumns = getLastFiveEntrySales()
 
 main()
 
