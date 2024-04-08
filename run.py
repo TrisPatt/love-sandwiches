@@ -46,11 +46,15 @@ def validateData(values):
     
     return True
 
-def updateSalesWorksheet(data):
-    print("updating worksheet... \n")
-    sales_worksheet = SHEET.worksheet("sales")
-    sales_worksheet.append_row(data)
-    print("sales worksheet updated successfully \n")
+def updateWorksheet(data, worksheet):
+    """
+    Receives a list of integers to be inserted into a worksheet
+    Update the relevant worksheet with the data provided
+    """
+    print(f"Updating {worksheet} worksheet...\n")
+    worksheet_to_update = SHEET.worksheet(worksheet)
+    worksheet_to_update.append_row(data)
+    print(f"{worksheet} worksheet updated successfully\n")
 
 def calculateSurplusData(sales_row):
     print("Calculating surplus stock")
@@ -63,29 +67,38 @@ def calculateSurplusData(sales_row):
         surplus_data.append(surplus)
     return surplus_data
 
-def updateSurplusWorksheet(surplus):
-    print("updating worksheet... \n")
-    surplus_worksheet = SHEET.worksheet("surplus")
-    surplus_worksheet.append_row(surplus)
-    print("surplus worksheet updated successfully \n")
-
 def getLastFiveEntrySales():
     sales = SHEET.worksheet("sales")
     
     columns = []
     for ind in range(1, 7):
-        column = sales.col.values(ind)
+        column = sales.col_values(ind)
         columns.append(column[-5:])
 
     return columns
 
+def calculateStockData(data):
+    print("calculating stock data...")
+    new_stock_data = []
+
+    for column in data:
+        int_column = [int(num) for num in column ]
+        average = sum(int_column) / len(int_column)
+        stock_num = average * 1.1
+        new_stock_data.append(round(stock_num))
+    return new_stock_data
+
+
 def main():
     data = getSalesData()
     salesData = [int(num) for num in data]
-    updateSalesWorksheet(salesData)
+    updateWorksheet(salesData, "sales")
     newSurplusData = calculateSurplusData(salesData)
-    updateSurplusWorksheet(newSurplusData)
-salesColumns = getLastFiveEntrySales()
+    updateWorksheet(newSurplusData, "surplus")
+    salesColumns = getLastFiveEntrySales()
+    stockData = calculateStockData(salesColumns)
+    updateWorksheet(stockData, "stock")
+    
 
 main()
 
