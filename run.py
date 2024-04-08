@@ -63,12 +63,18 @@ def calculateSurplusData(sales_row):
         surplus_data.append(surplus)
     return surplus_data
 
+def updateSurplusWorksheet(surplus):
+    print("updating worksheet... \n")
+    surplus_worksheet = SHEET.worksheet("surplus")
+    surplus_worksheet.append_row(surplus)
+    print("surplus worksheet updated successfully \n")
+
 def main():
     data = getSalesData()
     salesData = [int(num) for num in data]
     updateSalesWorksheet(salesData)
     newSurplusData = calculateSurplusData(salesData)
-    print(newSurplusData)
+    updateSurplusWorksheet(newSurplusData)
 
 
 main()
